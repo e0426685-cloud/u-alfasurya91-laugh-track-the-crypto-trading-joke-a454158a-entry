@@ -17,10 +17,28 @@ JOKE = (
 )
 
 
+MAX_CHARS = 200
+
+
+def validate(joke):
+    """Refuse to write an entry that breaks the competition rules."""
+    text = joke.strip()
+    if not text:
+        raise ValueError("entry joke must not be empty")
+    if "\n" in text:
+        raise ValueError("entry must be a single line")
+    if len(text) > MAX_CHARS:
+        raise ValueError(
+            "entry is %d characters, over the %d limit" % (len(text), MAX_CHARS)
+        )
+    return text
+
+
 def main():
+    joke = validate(JOKE)
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8") as f:
-        f.write(JOKE)
+        f.write(joke)
     # Plain open() + explicit chmod 644: the grader runs as a different
     # user, so the file must be world-readable (never tempfile.mkstemp,
     # which forces mode 0600).
